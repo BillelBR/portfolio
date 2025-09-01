@@ -10,14 +10,62 @@
 
 
 header {
-    background-color: #1f242d;
-    width: 100%;
-    position: fixed;
-    z-index: 999;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 200px ;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 200px;
+
+  background: rgba(31, 36, 45, 0.7); /* شفاف */
+  backdrop-filter: blur(10px);        /* تأثير زجاج */
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease, padding 0.3s ease;
+}
+
+header.scrolled {
+  background: #1f242d;   /* لون ثابت كي تسكرول */
+  padding: 10px 150px;   /* يقل شوية */
+}
+
+/* روابط التنقل */
+header nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 30px;
+  font-weight: 500;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* خط متحرك تحت الرابط */
+header nav a::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: rgb(247, 209, 126);  /* لون متباين */
+  transition: width 0.3s ease;
+}
+
+header nav a:hover {
+  color: #0ef;
+}
+
+header nav a:hover::after {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  header {
+    padding: 10px 40px;
+  }
 }
 
 
@@ -32,24 +80,29 @@ header {
   align-items: center;
 }
 
-/* الغلاف تاع الصورة بالإطار المتدرج المتحرك */
 .image-border {
   width: 260px;
   height: 260px;
   padding: 5px;
   border-radius: 50%;
-  background: linear-gradient(270deg, #ffe9c8, #ff8a41, #ff9b04);
+  background: linear-gradient(270deg, #ffe9c8, #ff8a41, #ff9b04, #ff3c00, #ff8a41);
   background-size: 400% 400%;
-  animation: rotateBorder 3s linear infinite;
+  animation: borderShift 6s ease infinite;
+  
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.4s ease, filter 0.4s ease;
+  
+  transition: transform 0.5s ease, filter 0.5s ease, box-shadow 0.5s ease;
+  box-shadow: 0 0 20px rgba(255, 138, 65, 0.3);
 }
 
+/* تأثير Hover */
 .image-border:hover {
-  transform: scale(1.1);
-  filter: brightness(1.2);
+  transform: scale(1.1) rotate(3deg);
+  filter: brightness(1.15);
+  box-shadow: 0 0 40px rgba(255, 138, 65, 0.6),
+              0 0 80px rgba(255, 155, 4, 0.4);
 }
 
 /* الصورة داخل الغلاف */
@@ -59,15 +112,29 @@ header {
   object-fit: cover;
   border-radius: 50%;
   display: block;
+  animation: float 4s ease-in-out infinite;
 }
 
-/* حركة التدرج */
-@keyframes rotateBorder {
+/* Animation: الخلفية تتحرك */
+@keyframes borderShift {
   0% {
     background-position: 0% 50%;
   }
-  100% {
+  50% {
     background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Animation: الصورة تعوم */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
 
@@ -121,13 +188,33 @@ section {
     font-weight: 500;
 }
 
-.main h2 span {
-    display: inline-block;
-    margin-top: 10px;
-    color: #f4aa3a;
-    font-size: 3em;
-    font-weight: 600;
+.typing {
+  color: #f4aa3a;
+  font-size: 3em;
+  font-weight: 600;
 }
+
+.typing span {
+  opacity: 0;
+  display: inline-block;
+  white-space: pre; /* يخلي المسافات يبانوا */
+}
+
+.cursor {
+  display: inline-block;
+  width: 3px;
+  background: #f4aa3a;
+  margin-left: 2px;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  50% { background: transparent; }
+}
+
+
+
+
 
 .main h3 {
     color: #fff;
@@ -177,12 +264,49 @@ section {
 
 .title {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* يوسط النص */
+    gap: 3px;                /* مسافة صغيرة بين الحروف */
     color: #f4aa3a;
     font-size: 2.2em;
     font-weight: 800;
     margin-bottom: 30px;
 }
+
+.title span {
+    display: inline-block;
+    animation: wave 1s ease-in-out infinite;
+}
+
+/* تأخير لكل حرف */
+.title span:nth-child(1) { animation-delay: 0s; }
+.title span:nth-child(2) { animation-delay: 0.1s; }
+.title span:nth-child(3) { animation-delay: 0.2s; }
+.title span:nth-child(4) { animation-delay: 0.3s; }
+.title span:nth-child(5) { animation-delay: 0.4s; }
+.title span:nth-child(6) { animation-delay: 0.5s; }
+.title span:nth-child(7) { animation-delay: 0.6s; }
+
+@keyframes wave {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+
+.titlee {
+  font-size: 3em;
+  font-weight: 800;
+  color: transparent;
+  -webkit-text-stroke: 2px #f4aa3a;
+  position: relative;
+  overflow: hidden;
+  animation: fill 3s forwards;
+}
+
+@keyframes fill {
+  from { color: transparent; }
+  to { color: #b6b5b4; }
+}
+
 
 .content {
     display: flex;
@@ -350,22 +474,30 @@ section {
 }
 
 .footer {
-    background-color: #1f242d;
-    color: #fff;
-    padding: 2em;
-    display: flex;
-    justify-content: space-between;
+  background: rgba(31, 36, 45, 0.95);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 2em 3em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border-top: 2px solid transparent;
+  border-image: linear-gradient(90deg, #ff9b04, #ff3c00, #ff8a41) 1;
+  box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.4);
 }
 
 .footer-title {
-    font-size: 1.3em;
-    font-weight: 600;
+  font-size: 1.5em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  position: relative;
 }
 
 .footer-title span {
-    color: #f4aa3a;
+  background: linear-gradient(90deg, #ff9b04, #ff3c00, #ff8a41);
+  -webkit-text-fill-color: transparent;
 }
-
 .footer .social-icons a{
     font-size: 1.3em;
     padding: 0 12px 0 0;
