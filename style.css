@@ -316,50 +316,179 @@ section {
 }
 
 .card {
-    background-color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     width: 21.25em;
-    box-shadow: 0 5px 25px rgba(1 1 1 / 15%);
-    border-radius: 10px;
+    border-radius: 20px;
     padding: 25px;
     margin: 15px;
-    transition: 0.7s ease;
+    transition: all 0.5s ease;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* تأثير ضوء متحرك */
+.card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(120deg, transparent, rgba(244, 170, 58, 0.3), transparent);
+    transform: rotate(25deg);
+    animation: shine 4s infinite;
+}
+
+@keyframes shine {
+    0% { transform: rotate(25deg) translateX(-200%); }
+    100% { transform: rotate(25deg) translateX(200%); }
 }
 
 .card:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px #f4aa3a;
+    transform: scale(1.08) translateY(-10px);
+    box-shadow: 0 15px 35px rgba(244, 170, 58, 0.6);
 }
 
 .card .icon {
     color: #f4aa3a;
-    font-size: 8em;
+    font-size: 6em;
     text-align: center;
-    transition: 0.7s ease;
+    display: block;
+    transition: transform 0.5s ease, text-shadow 0.5s ease;
 }
 
-.card .icon:hover{
-    transform: scale(1.1);
-    text-shadow: 0 0 50px #f4aa3a,0 0 50px #f4aa3a;
+.card:hover .icon {
+    transform: scale(1.2) rotate(10deg);
+   
 }
 
 .info {
     text-align: center;
+    margin-top: 15px;
 }
 
-.info h3{
+.info h3 {
     color: #f4aa3a;
-    font-size: 1.2em;
+    font-size: 1.3em;
     font-weight: 700;
-    margin: 10px;
+    margin: 10px 0;
+    letter-spacing: 1px;
+    transition: color 0.4s ease;
 }
+
+
 
 .projects {
   position: relative;
-  background-color: #1f242d;
-  color: #2b2f36;
-  overflow: hidden;
   min-height: 500px;
+  overflow: hidden;
+  color: #252222;
+
+  /* خلفية مجرة غامقة مع ديقرادي من الخارج للوسط */
+  background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 60%, #000 100%);
+  background-size: cover;
+  animation: galaxyMove 30s ease infinite;
+
+  
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
+
+/* حركة خفيفة للخلفية باش تبان حية */
+@keyframes galaxyMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* النجوم الثابتة */
+.projects::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: transparent url("https://www.transparenttextures.com/patterns/stardust.png") repeat;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+
+.projects1 {
+  position: relative;
+  min-height: 500px;
+  overflow: hidden;
+  color: #333;
+
+  /* خلفية سماوية فاتحة مع شمس */
+  background: radial-gradient(circle at 50% 20%, #fffae3 0%, #a8e6ff 40%, #87cefa 70%, #d0f0c0 100%);
+  background-size: cover;
+  animation: skyMove 20s ease infinite;
+
+ 
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* حركة خفيفة باش تحس بالجو */
+@keyframes skyMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* سحب خفيفة */
+.projects1::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: transparent url("https://www.transparenttextures.com/patterns/clouds.png") repeat;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+/* الأيقونات العائمة */
+.floating-icons {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* يخليهم فالخلفية */
+  pointer-events: none; /* باش ما يعيقوش الكليك */
+}
+
+.floating-icons .icon {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* أنيميشن الطفو */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* نخلي الـ content ديما فوق */
+.projects1 .title,
+.projects1 .content {
+  position: relative;
+  z-index: 2; /* ديما قدام */
+}
+
+/* نزيد نعدل النجوم باش يكونو تحت الأيقونات */
+.projects1::before {
+  z-index: -1; /* النجوم يرجعو تحت كلش */
+}
+
+
+
 /* العناصر العائمة */
 .floating-icons {
     position: absolute;
@@ -387,6 +516,18 @@ section {
 .icon.python   { top: 50%; left: 30%; animation-delay: 2s; }
 .icon.code     { top: 25%; left: 55%; animation-delay: 3.5s; }
 .icon.ux       { top: 5%;  left: 90%; animation-delay: 2.5s; }
+
+
+.icon.photoshop   { top: 10%; left: 10%; animation-delay: 0s; }
+.icon.illustrator { top: 30%; left: 20%; animation-delay: 2s; }
+.icon.indesign    { top: 20%; left: 70%; animation-delay: 3s; }
+.icon.coreldraw   { top: 60%; left: 15%; animation-delay: 1s; }
+.icon.canva       { top: 80%; left: 50%; animation-delay: 3s; }
+.icon.figma       { top: 45%; left: 75%; animation-delay: 2s; }
+.icon.xd          { top: 65%; left: 85%; animation-delay: 4s; }
+.icon.affinity    { top: 50%; left: 30%; animation-delay: 2s; }
+.icon.gimp        { top: 25%; left: 55%; animation-delay: 3.5s; }
+.icon.blender     { top: 5%;  left: 90%; animation-delay: 2.5s; }
 
 @keyframes floatIcon {
   0% {
