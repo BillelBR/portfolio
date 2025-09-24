@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movies Explorer (Free API)</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #1a1a2e, #0f0f1a, #000);
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #00f2fe;
+      text-shadow: 0 0 15px #00f2feaa;
+    }
+
+    .search-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .search-box input {
+      padding: 12px 20px;
+      width: 250px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .search-box button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      background: linear-gradient(135deg,#00f2fe,#4facfe);
+      color: #000;
+      transition: 0.3s ease;
+    }
+    .search-box button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #00f2fe;
+    }
+
+    .movies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      width: 90%;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+
+    .movie-card {
+      padding: 20px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      animation: fadeIn 0.8s ease forwards;
+      text-align: center;
+    }
+    .movie-card img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .movie-card h2 {
+      margin: 10px 0;
+      font-size: 1.2rem;
+      color: #4facfe;
+    }
+    .movie-card p {
+      margin: 5px 0;
+      font-size: 0.9rem;
+      color: #ddd;
+    }
+
+    .error {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 12px;
+      background: rgba(255,0,0,0.15);
+      border: 1px solid #ff4d4d;
+      color: #ff8080;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @media (max-width: 500px) {
+      header h1 {font-size: 1.8rem;}
+      .search-box input {width: 200px;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎬 Movies Explorer</h1>
+    <p>Discover movies by title (Free API)</p>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="movieInput" placeholder="Enter movie title...">
+    <button onclick="searchMovie()">Search</button>
+  </div>
+
+  <div id="result"></div>
+
+<script>
+async function searchMovie() {
+  const title = document.getElementById("movieInput").value.trim();
+  const resultDiv = document.getElementById("result");
+  resultDiv.innerHTML = "";
+
+  if (!title) {
+    resultDiv.innerHTML = `<div class="error">⚠️ Please enter a movie title.</div>`;
+    return;
+  }
+
+  try {
+    const url = `https://imdb.iamidiotareyoutoo.com/search?q=${encodeURIComponent(title)}`;
+    console.log("Fetching:", url);
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data || !data.description || data.description.length === 0) {
+      resultDiv.innerHTML = `<div class="error">❌ Movie not found.</div>`;
+      return;
+    }
+
+    // نعرض جميع النتائج
+    const moviesHTML = data.description.map(movie => `
+      <div class="movie-card">
+        <img src="${movie['#IMG_POSTER'] || 'https://via.placeholder.com/300x450?text=No+Image'}" alt="Poster">
+        <h2>${movie['#TITLE']}</h2>
+        <p>📅 Year: ${movie['#YEAR'] || 'N/A'}</p>
+        <p>⭐ IMDb Rating: ${movie['#RANK'] || 'N/A'}</p>
+        <p>🎭 Type: ${movie['#TYPE']}</p>
+        <p>🔗 <a href="https://www.imdb.com/title/${movie['#IMDB_ID']}" target="_blank" style="color:#4facfe">View on IMDb</a></p>
+      </div>
+    `).join("");
+
+    resultDiv.innerHTML = `<div class="movies-grid">${moviesHTML}</div>`;
+
+  } catch (error) {
+    console.error(error);
+    resultDiv.innerHTML = `<div class="error">⚠️ Error fetching data.</div>`;
+  }
+}
+</script>
+
+</body>
+</html>

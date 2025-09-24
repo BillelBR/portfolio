@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تطبيق الطقس - الجزائر</title>
+  <style>
+    /* خلفية متدرجة */
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 20px;
+    }
+
+    /* Glassmorphism Card */
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      padding: 20px;
+      color: #fff;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+    }
+
+    select {
+      background: rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    option {
+      color: #000;
+    }
+
+    button {
+      background: #ff9800;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #e68900;
+    }
+
+    .weather-info {
+      margin-top: 20px;
+      font-size: 18px;
+      line-height: 1.8;
+    }
+
+    .temp {
+      font-size: 40px;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .icon {
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>🌤️ حالة الطقس - الجزائر</h2>
+      <select id="wilaya">
+        <option value="" disabled selected>اختر الولاية</option>
+      </select>
+      <button onclick="getWeather()">عرض الطقس</button>
+      <div class="weather-info" id="weather"></div>
+    </div>
+  </div>
+
+  <script>
+    // قائمة 58 ولاية الجزائرية مع الإحداثيات
+    const wilayas = [
+      {name: "أدرار", lat: 27.8742, lon: -0.2939},
+      {name: "الشلف", lat: 36.1653, lon: 1.3345},
+      {name: "الأغواط", lat: 33.4810, lon: 2.5230},
+      {name: "أم البواقي", lat: 35.8754, lon: 7.1135},
+      {name: "باتنة", lat: 35.5550, lon: 6.1741},
+      {name: "بجاية", lat: 36.7509, lon: 5.0567},
+      {name: "بسكرة", lat: 34.8504, lon: 5.7280},
+      {name: "بشار", lat: 31.6167, lon: -2.2167},
+      {name: "البليدة", lat: 36.4803, lon: 2.8003},
+      {name: "البويرة", lat: 36.3801, lon: 3.9014},
+      {name: "تمنراست", lat: 22.7850, lon: 5.5228},
+      {name: "تبسة", lat: 35.4042, lon: 8.1242},
+      {name: "تلمسان", lat: 34.8783, lon: -1.3150},
+      {name: "تيارت", lat: 35.3710, lon: 1.3210},
+      {name: "تيزي وزو", lat: 36.7169, lon: 4.0497},
+      {name: "الجزائر", lat: 36.7538, lon: 3.0588},
+      {name: "الجلفة", lat: 34.6728, lon: 3.2630},
+      {name: "جيجل", lat: 36.8210, lon: 5.7667},
+      {name: "سطيف", lat: 36.1900, lon: 5.4100},
+      {name: "سعيدة", lat: 34.8303, lon: 0.1517},
+      {name: "سكيكدة", lat: 36.8799, lon: 6.9063},
+      {name: "سيدي بلعباس", lat: 35.1899, lon: -0.6417},
+      {name: "عنابة", lat: 36.9000, lon: 7.7667},
+      {name: "قالمة", lat: 36.4651, lon: 7.4273},
+      {name: "قسنطينة", lat: 36.3650, lon: 6.6147},
+      {name: "المدية", lat: 36.2653, lon: 2.7670},
+      {name: "مستغانم", lat: 35.9312, lon: 0.0892},
+      {name: "المسيلة", lat: 35.7058, lon: 4.5419},
+      {name: "معسكر", lat: 35.3941, lon: 0.1380},
+      {name: "ورقلة", lat: 31.9575, lon: 5.3278},
+      {name: "وهران", lat: 35.6987, lon: -0.6349},
+      {name: "البيض", lat: 33.6831, lon: 1.0195},
+      {name: "إليزي", lat: 26.5000, lon: 8.5000},
+      {name: "برج بوعريريج", lat: 36.0730, lon: 4.7610},
+      {name: "بومرداس", lat: 36.7664, lon: 3.4772},
+      {name: "الطارف", lat: 36.7670, lon: 8.3330},
+      {name: "تندوف", lat: 27.6742, lon: -8.1474},
+      {name: "تيسمسيلت", lat: 35.6072, lon: 1.8139},
+      {name: "الوادي", lat: 33.3683, lon: 6.8673},
+      {name: "خنشلة", lat: 35.4358, lon: 7.1433},
+      {name: "سوق أهراس", lat: 36.2848, lon: 7.9511},
+      {name: "تيبازة", lat: 36.5908, lon: 2.4493},
+      {name: "ميلة", lat: 36.4503, lon: 6.2644},
+      {name: "عين الدفلى", lat: 36.2641, lon: 1.9679},
+      {name: "النعامة", lat: 33.2667, lon: -0.3167},
+      {name: "عين تموشنت", lat: 35.2975, lon: -1.1403},
+      {name: "غرداية", lat: 32.4900, lon: 3.6730},
+      {name: "غليزان", lat: 35.7373, lon: 0.5550},
+      {name: "تيميمون", lat: 29.2500, lon: 0.2330},
+      {name: "برج باجي مختار", lat: 22.7170, lon: 0.5830},
+      {name: "أولاد جلال", lat: 34.4167, lon: 5.0667},
+      {name: "بني عباس", lat: 30.1333, lon: -2.1667},
+      {name: "إن صالح", lat: 27.2000, lon: 2.4667},
+      {name: "إن قزام", lat: 20.1000, lon: 5.7667},
+      {name: "تقرت", lat: 33.1000, lon: 6.0667},
+      {name: "جانت", lat: 24.0000, lon: 9.5000},
+      {name: "المغير", lat: 33.9500, lon: 5.9167},
+      {name: "المنيعة", lat: 30.5833, lon: 2.8833}
+    ];
+
+    // إدخال الولايات في القائمة
+    const select = document.getElementById("wilaya");
+    wilayas.forEach(w => {
+      const opt = document.createElement("option");
+      opt.value = `${w.lat},${w.lon}`;
+      opt.textContent = w.name;
+      select.appendChild(opt);
+    });
+
+    async function getWeather() {
+      const coords = select.value;
+      if (!coords) return alert("اختر الولاية أولا!");
+      const [lat, lon] = coords.split(",");
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+      const res = await fetch(url);
+      const data = await res.json();
+      const w = data.current_weather;
+
+      // أيقونات الطقس حسب الكود
+      const icons = {
+        0: "☀️",
+        1: "🌤️",
+        2: "⛅",
+        3: "☁️",
+        45: "🌫️",
+        48: "🌫️",
+        51: "🌦️",
+        61: "🌧️",
+        71: "❄️",
+        95: "⛈️"
+      };
+
+      document.getElementById("weather").innerHTML = `
+        <div class="temp">${w.temperature}°C</div>
+        <div>${icons[w.weathercode] || "🌍"} ${w.windspeed} km/h</div>
+      `;
+    }
+  </script>
+</body>
+</html>
