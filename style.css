@@ -878,36 +878,3 @@ section {
 
 
 
-.main2 {
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    background: url(4K-Black-Backgrounds-Design-HD-Wallpapers-40672.jpg) no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
-
-.main2 h2 {
-    color: #fff;
-    font-size: 1.4em;
-    font-weight: 500;
-   
-}
-
-.main2 h2 span {
-    display: inline-block;
-    margin-top: 10px;
-    color: #f4aa3a;
-    font-size: 3em;
-    font-weight: 600;
-}
-
-.main2 h3 {
-    color: #fff;
-    font-size: 2em;   
-    letter-spacing: 1px;
-    margin-top: 10px;
-    margin-bottom: 30px;
-}
