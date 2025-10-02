@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Click & Play</title>
+  <link rel="icon" href="cho.png">
+  <style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  background: linear-gradient(135deg, #0f0f1c, #1a1a2e, #16213e);
+  background-size: 300% 300%;
+  animation: bgMove 12s ease infinite;
+  color: #f4f4f4;
+  line-height: 1.6;
+  transition: all 0.3s ease;
+}
+
+/* حركة خلفية متدرجة */
+@keyframes bgMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Scrollbar ستايل */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #111;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0077ff, #00ffe7);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #005fcc, #00c6ff);
+}
+
+
+header {
+  background: linear-gradient(135deg, #0077ff, #00c6ff);
+  color: #fff;
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  transition: background 0.3s ease;
+}
+
+header:hover {
+  background: linear-gradient(135deg, #005fcc, #00aaff);
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+header h1:hover {
+  transform: scale(1.05);
+  color: #ffeb3b;
+}
+
+header img {
+  height: 45px;
+  width: auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+header img:hover {
+  transform: rotate(-5deg) scale(1.1);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Select box */
+select {
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, #ffffff, #f9f9f9);
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  font-size: 1rem;
+}
+
+select:hover {
+  background: linear-gradient(135deg, #f0f8ff, #e6f0ff);
+  border-color: #0077ff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 119, 255, 0.35);
+}
+
+select:focus {
+  outline: none;
+  border-color: #00c6ff;
+  box-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
+  background: linear-gradient(135deg, #ffffff, #f0faff);
+}
+
+/* Search box */
+.search-box {
+  text-align: center;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.search-box input {
+  width: 340px;
+  max-width: 95%;
+  padding: 0.8rem 3rem 0.8rem 1.2rem;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  background: linear-gradient(135deg, #ffffff, #fafafa);
+  color: #333;
+  font-size: 1rem;
+  font-weight: 500;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.search-box input:focus {
+  border-color: #0077ff;
+  box-shadow: 0 0 12px rgba(0, 119, 255, 0.6);
+  background: linear-gradient(135deg, #ffffff, #f0f8ff);
+}
+
+/* أيقونة البحث */
+.search-box::before {
+
+  position: absolute;
+  right: 1.2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: #0077ff;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.search-box input:focus + .search-box::before {
+  color: #00c6ff;
+}
+
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 25px;
+  padding: 2.5rem;
+}
+
+.product {
+  background: linear-gradient(145deg, #2d2d2d, #1f1f1f);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.product:hover {
+  transform: translateY(-8px) scale(1.03);
+   box-shadow: 0 0 25px #00ffe7;
+}
+
+.product::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 119, 255, 0.2), transparent 70%);
+  transform: rotate(25deg);
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.product:hover::before {
+  opacity: 1;
+}
+
+.product img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.product:hover img {
+  transform: scale(1.08);
+}
+
+.product-content {
+  padding: 1.2rem;
+  text-align: center;
+}
+
+.product-content h2 {
+  font-size: 1.3rem;
+  margin: 0 0 0.6rem 0;
+  color: #fff;
+  font-weight: 600;
+}
+
+.product-content p {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: #bbb;
+  line-height: 1.5;
+}
+
+.price {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #4CAF50;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  background: linear-gradient(135deg, #0077ff, #00c6ff);
+  color: #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 119, 255, 0.3);
+}
+
+.btn:hover {
+  background: linear-gradient(135deg, #005fcc, #00a3cc);
+  box-shadow: 0 6px 15px rgba(0, 119, 255, 0.5);
+  transform: translateY(-3px);
+}
+footer {
+  background: #111;
+  padding: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #777;
+}
+footer a {
+  color: #00ffe7;
+  text-decoration: none;
+  margin: 0 8px;
+}
+
+  </style>
+</head>
+<body>
+<header>
+  <div style="display: flex; align-items: center; gap: 10px;">
+    <img src="logogo.jpg" alt="Logo" style="height:70px; width:auto; border-radius:8px;">
+    <div>
+      <h1 id="store-title"> </h1>
+      <p id="store-subtitle"></p>
+    </div>
+  </div>
+
+    <div class="controls">
+      <select id="langSelect" onchange="setLanguage(this.value)">
+        <option value="ar">العربية</option>
+        <option value="fr">Français</option>
+        <option value="en">English</option>
+      </select>
+      <select id="currencySelect" onchange="setCurrency(this.value)">
+        <option value="DZD">DZD</option>
+        <option value="USD">USD</option>
+      </select>
+    </div>
+    
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="search" placeholder=" ابحث عن منتج...">
+  </div>
+
+  <main>
+    <div class="products" id="products"></div>
+  </main>
+
+<footer id="contact">
+  <p>© 2025 Click & Play | جميع الحقوق محفوظة</p>
+  <p>
+    <a href="https://www.facebook.com/profile.php?id=61577784045193">Facebook</a> | 
+    <a href="#">Instagram</a> | 
+    <a href="https://discord.gg/akcPZmPE">Discord</a>
+  </p>
+</footer>
+
+  <script>
+    const facebookPage = "YourPageIDorUsername";
+
+    const translations = {
+      ar: {
+        title: "Click & Play ",
+        subtitle: "اكتشف منتجاتنا المميزة",
+        buy: "اطلب الآن",
+        search: " ابحث عن منتج..."
+      },
+      fr: {
+        title: "Click & Play ",
+        subtitle: "Découvrez nos produits incroyables",
+        buy: "Commander",
+        search: " Rechercher un produit..."
+      },
+      en: {
+        title: "Click & Play ",
+        subtitle: "Discover our amazing products",
+        buy: "Buy Now",
+        search: " Search a product..."
+      }
+    };
+
+    let currentLang = "ar";
+    let currentCurrency = "DZD";
+    const exchangeRate = 0.0040; // 1 DZD ≈ 0.0040 USD (تقديري)
+
+// نجيب المنتجات من localStorage
+let products = JSON.parse(localStorage.getItem("products")) || [];
+
+// نزيد منتجات افتراضية إذا تحب يكونو موجودين ديما
+if(products.length === 0){
+  products = [
+    {
+      name: {
+        ar: "مصباح LED فانوس التخييم",
+        fr: "Lampe LED & Lanterne Camping",
+        en: "Lamp LED & Lantern Camping"
+      },
+      desc: {
+        ar: "💡 ضو قوي يضويك حتى فالليل الكحل\n🔋 تشحنها بالطاقة الشمسية أو بالـUSB\n📱 فيها بورت تشحن بيه تليفونك\n🖐️ خفيفة وسهلة الحمل في أي بلاصة",
+        fr: "💡 Une lumière puissante ...",
+        en: "💡 A strong light ..."
+      },
+      price: 250,
+      img: "prod1.jpg"
+    }
+  ];
+  localStorage.setItem("products", JSON.stringify(products));
+}
+
+
+
+    const container = document.getElementById("products");
+    const searchBox = document.getElementById("search");
+
+    function renderProducts() {
+      container.innerHTML = "";
+      const query = searchBox.value.toLowerCase();
+
+      products.forEach(prod => {
+        const name = prod.name[currentLang];
+        const desc = prod.desc[currentLang];
+
+        if (name.toLowerCase().includes(query) || desc.toLowerCase().includes(query)) {
+          const div = document.createElement("div");
+          div.className = "product";
+
+          const img = document.createElement("img");
+          img.src = prod.img;
+          img.alt = name;
+
+          const content = document.createElement("div");
+          content.className = "product-content";
+
+          const h = document.createElement("h2");
+          h.textContent = name;
+
+          const p = document.createElement("p");
+          p.textContent = desc;
+
+          const price = document.createElement("div");
+          price.className = "price";
+
+let priceText = "";
+if (currentCurrency === "DZD") {
+  priceText = prod.price + " DZD";
+} else {
+  priceText = (prod.price * exchangeRate).toFixed(2) + " USD";
+}
+
+          price.textContent = priceText;
+
+          const btn = document.createElement("a");
+btn.href = `https://m.me/61579259785565?text=${encodeURIComponent("سلام، حاب نطلب المنتج: " + name + " بسعر " + priceText)}`;
+          btn.target = "_blank";
+          btn.className = "btn";
+          btn.textContent = translations[currentLang].buy;
+
+          content.append(h, p, price, btn);
+          div.append(img, content);
+          container.appendChild(div);
+        }
+      });
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.getElementById("store-title").textContent = translations[lang].title;
+      document.getElementById("store-subtitle").textContent = translations[lang].subtitle;
+      document.getElementById("search").placeholder = translations[lang].search;
+      renderProducts();
+    }
+
+    function setCurrency(curr) {
+      currentCurrency = curr;
+      renderProducts();
+    }
+
+    searchBox.addEventListener("input", renderProducts);
+
+    // تحميل أولي
+    setLanguage("ar");
+  </script>
+</body>
+</html>

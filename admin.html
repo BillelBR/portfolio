@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>إضافة منتجات - Switchi Hna</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 { color: #00c6ff; }
+    form {
+      background: #222;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: auto;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+    }
+    button {
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #0077ff, #00c6ff);
+      border: none;
+      color: #fff;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #005fcc, #00a3cc);
+    }
+
+    /* ✅ ستايل القائمة */
+    #productList {
+      margin-top: 30px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .product-item {
+      background: #222;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 12px 0;
+      text-align: left;
+      position: relative;
+    }
+    .product-item img {
+      height: 60px;
+      width: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .product-actions {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+    .product-actions button {
+      margin-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📦 إضافة منتج جديد</h1>
+  <form id="productForm">
+    <input type="text" id="name_ar" placeholder="اسم المنتج (عربية)" required>
+    <input type="text" id="name_fr" placeholder="Nom du produit (Français)" required>
+    <input type="text" id="name_en" placeholder="Product name (English)" required>
+    
+    <textarea id="desc_ar" placeholder="الوصف (عربية)" required></textarea>
+    <textarea id="desc_fr" placeholder="Description (Français)" required></textarea>
+    <textarea id="desc_en" placeholder="Description (English)" required></textarea>
+    
+    <input type="number" id="price" placeholder="السعر (DZD)" required>
+    <input type="text" id="img" placeholder="رابط/اسم صورة المنتج (ex: prod5.jpg)" required>
+    
+    <button type="submit">➕ أضف المنتج</button>
+  </form>
+
+  <h2 style="margin-top:40px;color:#00c6ff;">📝 قائمة المنتجات</h2>
+  <div id="productList"></div>
+
+  <script>
+    const form = document.getElementById("productForm");
+    const productList = document.getElementById("productList");
+
+    function loadProducts() {
+      let products = JSON.parse(localStorage.getItem("products")) || [];
+      productList.innerHTML = "";
+
+      products.forEach((p, index) => {
+        const div = document.createElement("div");
+        div.className = "product-item";
+        div.innerHTML = `
+          <img src="${p.img}" alt="img">
+          <strong>${p.name.ar}</strong> - ${p.price} DZD
+          <div class="product-actions">
+            <button onclick="editProduct(${index})">✏️ تعديل</button>
+            <button onclick="deleteProduct(${index})">🗑️ حذف</button>
+          </div>
+          <p style="margin-top:5px;font-size:0.9rem;color:#bbb;">${p.desc.ar}</p>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    // ✅ إضافة منتج
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const product = {
+        name: {
+          ar: document.getElementById("name_ar").value,
+          fr: document.getElementById("name_fr").value,
+          en: document.getElementById("name_en").value
+        },
+        desc: {
+          ar: document.getElementById("desc_ar").value,
+          fr: document.getElementById("desc_fr").value,
+          en: document.getElementById("desc_en").value
+        },
+        price: parseInt(document.getElementById("price").value),
+        img: document.getElementById("img").value
+      };
+
+      let products = JSON.parse(localStorage.getItem("products")) || [];
+      products.push(product);
+      localStorage.setItem("products", JSON.stringify(products));
+
+      alert("✅ تم إضافة المنتج بنجاح!");
+      form.reset();
+      loadProducts();
+    });
+
+    // ✅ حذف منتج
+    function deleteProduct(index) {
+      let products = JSON.parse(localStorage.getItem("products")) || [];
+      if(confirm("هل تريد حذف هذا المنتج؟")) {
+        products.splice(index, 1);
+        localStorage.setItem("products", JSON.stringify(products));
+        loadProducts();
+      }
+    }
+
+    // ✅ تعديل منتج
+    function editProduct(index) {
+      let products = JSON.parse(localStorage.getItem("products")) || [];
+      const p = products[index];
+
+      // نرجع القيم للفورم
+      document.getElementById("name_ar").value = p.name.ar;
+      document.getElementById("name_fr").value = p.name.fr;
+      document.getElementById("name_en").value = p.name.en;
+      document.getElementById("desc_ar").value = p.desc.ar;
+      document.getElementById("desc_fr").value = p.desc.fr;
+      document.getElementById("desc_en").value = p.desc.en;
+      document.getElementById("price").value = p.price;
+      document.getElementById("img").value = p.img;
+
+      // نحذف القديم باش كي نديرو submit يتعاود يتسجل
+      products.splice(index, 1);
+      localStorage.setItem("products", JSON.stringify(products));
+      loadProducts();
+    }
+
+    // تحميل القائمة أول مرة
+    loadProducts();
+  </script>
+</body>
+</html>
